@@ -23,4 +23,14 @@ public class BowlingScoreTest {
         assertEquals(300, BowlingScore.score("X X X X X X X X X XXX"));
     }
 
+    @Test
+    public void testScore4() throws Exception {
+        assertEquals(142, BowlingScore.score("62 71 X 9- 8/ X X 35 72 X28"));
+    }
+
+    @Test
+    public void testScore5() throws Exception {
+        assertEquals(129, BowlingScore.score("62 71 X 9- 8/ X X 35 72 61"));
+    }
+
 }
