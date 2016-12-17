@@ -1,4 +1,4 @@
-package workbook.clean.code.function;
+package clean.code.function;
 
 import org.junit.Test;
 

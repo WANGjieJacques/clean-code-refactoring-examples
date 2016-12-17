@@ -1,4 +1,4 @@
-package workbook.clean.code.function;
+package clean.code.function;
 
 /**
  * Created by hwang on 17/12/2016.
