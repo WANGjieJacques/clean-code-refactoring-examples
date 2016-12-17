@@ -117,7 +117,7 @@ public class BowlingScore {
             if ('X' == third) {
                 score += 10;
             } else if ('-' != third) {
-                score += second - '0';
+                score += third - '0';
             }
         } else if ('/' == second) {
             score += 10;
@@ -132,7 +132,7 @@ public class BowlingScore {
                 score = score + first - '0';
             }
             if ('-' != second) {
-                score = score + first - '0';
+                score = score + second - '0';
             }
         }
         return score;
