@@ -5,33 +5,102 @@ package clean.code.function;
  */
 public class BowlingScore {
 
+    public static final int FRAME_COUNT = 10;
+
     public static int score(String frames) {
-        int score = 0;
         String[] framesSplit = frames.split(" ");
+        if (framesSplit.length != FRAME_COUNT) {
+            throw new IllegalArgumentException("A game must contain 10 and only 10 frames");
+        }
+        int nineFrames = calculateScoreForFirstNineFrames(framesSplit);
+        int lastFrame = calculateScoreForLastFrame(framesSplit[framesSplit.length - 1]);
+        return nineFrames + lastFrame;
+    }
+
+    private static int calculateScoreForLastFrame(String lastFrame) {
+        if (hasThirdShot(lastFrame)) {
+            return withThreeShots(lastFrame);
+        } else {
+            return withTwoShots(lastFrame);
+        }
+    }
+
+    private static boolean hasThirdShot(String lastFrame) {
+        return isStrikeShot(firstShot(lastFrame)) || isSpareShot(secondShot(lastFrame));
+    }
+
+    private static boolean isSpareShot(char shot) {
+        return '/' == shot;
+    }
+
+    private static boolean isStrikeShot(char shot) {
+        return 'X' == shot;
+    }
+
+    private static char secondShot(String lastFrame) {
+        return lastFrame.charAt(1);
+    }
+
+    private static char firstShot(String frame) {
+        return frame.charAt(0);
+    }
+
+    private static int withTwoShots(String lastFrame) {
+        return normalShotScore(firstShot(lastFrame)) + normalShotScore(secondShot(lastFrame));
+    }
+
+    private static int withThreeShots(String tenthFrame) {
+        if (isStrikeShot(firstShot(tenthFrame))) {
+            return startingWithStrike(tenthFrame);
+        } else {
+            return startingWithSpare(tenthFrame);
+        }
+    }
+
+    private static int startingWithSpare(String tenthFrame) {
+        return 10 + nonSpareScore(thirdShot(tenthFrame));
+    }
+
+    private static int startingWithStrike(String tenthFrame) {
+        return 10 + nonSpareScore(secondShot(tenthFrame)) + nonSpareScore(thirdShot(tenthFrame));
+    }
+
+    private static char thirdShot(String tenthFrame) {
+        return tenthFrame.charAt(2);
+    }
+
+    private static int nonSpareScore(char shot) {
+        if (isSpareShot(shot)) {
+            throw new IllegalStateException("Shot must not be spare");
+        }
+        if (isStrikeShot(shot)) {
+            return 10;
+        } else {
+            return normalShotScore(shot);
+        }
+    }
+
+    private static int normalShotScore(char shot) {
+        if (isGutterShot(shot)) {
+            return 0;
+        } else {
+            return shot - '0';
+        }
+    }
+
+    private static boolean isGutterShot(char third) {
+        return '-' == third;
+    }
+
+    private static int calculateScoreForFirstNineFrames(String[] framesSplit) {
+        int score = 0;
         for (int i = 0; i < 9; i++) {
             String currentFrame = framesSplit[i];
             if ("X".equals(currentFrame)) {
                 score += 10;
                 String nextFrame = framesSplit[i + 1];
-                if(i+1 == 9) {
-                    char first = nextFrame.charAt(0);
-                    char second = nextFrame.charAt(1);
-                    if('/' == second) {
-                        score += 10;
-                    } else {
-                        if('X' == first) {
-                            score += 10;
-                        } else if('-' != first) {
-                            score += first - '0';
-                        }
-
-
-                        if('X' == second) {
-                            score += 10;
-                        } else if('-' != second) {
-                            score += first - '0';
-                        }
-                    }
+                if (i + 1 == 9) {
+                    score = score + calcualteScore(nextFrame);
                 } else {
                     if ("X".equals(nextFrame)) {
                         score += 10;
@@ -40,9 +109,9 @@ public class BowlingScore {
                             if ("X".equals(nextNextFrame)) {
                                 score += 10;
                             } else {
-                                char first = nextNextFrame.charAt(0);
-                                char second = nextNextFrame.charAt(1);
-                                if ('/' == second) {
+                                char first = firstShot(nextNextFrame);
+                                char second = secondShot(nextNextFrame);
+                                if (isSpareShot(second)) {
                                     score += 10;
                                 } else {
                                     if ('-' != first) {
@@ -51,18 +120,14 @@ public class BowlingScore {
                                 }
                             }
                         } else {
-                            char first = nextNextFrame.charAt(0);
-                            if ('X' == first) {
-                                score += 10;
-                            } else if ('-' != first) {
-                                score += first - '0';
-                            }
+                            char first = firstShot(nextNextFrame);
+                            score += nonSpareScore(first);
                         }
 
                     } else {
-                        char first = nextFrame.charAt(0);
-                        char second = nextFrame.charAt(1);
-                        if ('/' == second) {
+                        char first = firstShot(nextFrame);
+                        char second = secondShot(nextFrame);
+                        if (isSpareShot(second)) {
                             score += 10;
                         } else {
                             if ('-' != first) {
@@ -78,15 +143,15 @@ public class BowlingScore {
 
                 }
             } else {
-                char first = currentFrame.charAt(0);
-                char second = currentFrame.charAt(1);
-                if ('/' == second) {
+                char first = firstShot(currentFrame);
+                char second = secondShot(currentFrame);
+                if (isSpareShot(second)) {
                     score += 10;
                     String nextFrame = framesSplit[i + 1];
                     if ("X".equals(nextFrame)) {
                         score += 10;
                     } else {
-                        char firstNextFrame = nextFrame.charAt(0);
+                        char firstNextFrame = firstShot(nextFrame);
                         if ('-' != firstNextFrame) {
                             score += firstNextFrame - '0';
                         }
@@ -102,37 +167,23 @@ public class BowlingScore {
                 }
             }
         }
+        return score;
+    }
 
-        String tenthFrame = framesSplit[9];
-        char first = tenthFrame.charAt(0);
-        char second = tenthFrame.charAt(1);
-        if ('X' == first) {
+    private static int calcualteScore(String nextFrame) {
+        int score = 0;
+        char firstShot = firstShot(nextFrame);
+        char secondShot = secondShot(nextFrame);
+        if (isSpareShot(secondShot)) {
             score += 10;
-            if ('X' == second) {
-                score += 10;
-            } else if ('-' != second) {
-                score += second - '0';
-            }
-            char third = tenthFrame.charAt(2);
-            if ('X' == third) {
-                score += 10;
-            } else if ('-' != third) {
-                score += third - '0';
-            }
-        } else if ('/' == second) {
-            score += 10;
-            char third = tenthFrame.charAt(2);
-            if ('X' == third) {
-                score += 10;
-            } else if ('-' != third) {
-                score += third - '0';
-            }
         } else {
-            if ('-' != first) {
-                score = score + first - '0';
-            }
-            if ('-' != second) {
-                score = score + second - '0';
+            score += nonSpareScore(firstShot);
+
+
+            if (isStrikeShot(secondShot)) {
+                score += 10;
+            } else if ('-' != secondShot) {
+                score += firstShot - '0';
             }
         }
         return score;
