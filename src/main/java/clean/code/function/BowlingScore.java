@@ -88,8 +88,8 @@ public class BowlingScore {
         }
     }
 
-    private static boolean isGutterShot(char third) {
-        return '-' == third;
+    private static boolean isGutterShot(char shot) {
+        return '-' == shot;
     }
 
     private static int calculateScoreForFirstNineFrames(String[] frames) {
@@ -113,13 +113,13 @@ public class BowlingScore {
         return isStrikeShot(frame.charAt(0));
     }
 
-    private static int scoreForNotStrikeAt(int i, String[] frames, String currentFrame) {
+    private static int scoreForNotStrikeAt(int frameIndex, String[] frames, String currentFrame) {
         int score = 0;
         char first = firstShot(currentFrame);
         char second = secondShot(currentFrame);
         if (isSpareShot(second)) {
             score += 10;
-            String nextFrame = frames[i + 1];
+            String nextFrame = frames[frameIndex + 1];
             if (isStrikeFrame(nextFrame)) {
                 score += 10;
             } else {
@@ -140,51 +140,45 @@ public class BowlingScore {
         return score;
     }
 
-    private static int scoreForStrikeAt(int i, String[] frames) {
+    private static int scoreForStrikeAt(int frameIndex, String[] frames) {
         int score = 10;
-        String nextFrame = frames[i + 1];
-        if (i + 1 == 9) {
-            score = score + calculateScore(nextFrame);
-        } else {
-            if (isStrikeFrame(nextFrame)) {
-                score += 10;
-                String nextNextFrame = frames[i + 2];
-                if (i + 2 != 9) {
-                    if (isStrikeFrame(nextNextFrame)) {
-                        score += 10;
-                    } else {
-                        char first = firstShot(nextNextFrame);
-                        char second = secondShot(nextNextFrame);
-                        if (isSpareShot(second)) {
-                            score += 10;
-                        } else {
-                            if ('-' != first) {
-                                score = score + first - '0';
-                            }
-                        }
-                    }
-                } else {
-                    char first = firstShot(nextNextFrame);
-                    score += nonSpareScore(first);
-                }
+        String nextFrame = frames[frameIndex + 1];
+        if (is8thFrame(frameIndex)) {
+            return score + calculateScore(nextFrame);
+        }
+        if (isStrikeFrame(nextFrame)) {
+            return score + scoreForNextStrikeFrame(frameIndex, frames[frameIndex + 2]);
+        }
+        if (isSpareShot(secondShot(nextFrame))) {
+            return score + 10;
+        }
+        return score + normalShotScore(firstShot(nextFrame)) + normalShotScore(secondShot(nextFrame));
+    }
 
+    private static boolean is8thFrame(int frameIndex) {
+        return frameIndex + 1 == 9;
+    }
+
+    private static int scoreForNextStrikeFrame(int frameIndex, String frame) {
+        int score = 10;
+        String nextNextFrame = frame;
+        if (frameIndex + 2 != 9) {
+            if (isStrikeFrame(nextNextFrame)) {
+                score += 10;
             } else {
-                char first = firstShot(nextFrame);
-                char second = secondShot(nextFrame);
+                char first = firstShot(nextNextFrame);
+                char second = secondShot(nextNextFrame);
                 if (isSpareShot(second)) {
                     score += 10;
                 } else {
                     if ('-' != first) {
                         score = score + first - '0';
                     }
-
-                    if ('-' != second) {
-                        score = score + second - '0';
-                    }
                 }
-
             }
-
+        } else {
+            char first = firstShot(nextNextFrame);
+            score += nonSpareScore(first);
         }
         return score;
     }
