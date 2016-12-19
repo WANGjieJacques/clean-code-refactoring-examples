@@ -100,7 +100,7 @@ public class BowlingScore {
                 score += 10;
                 String nextFrame = framesSplit[i + 1];
                 if (i + 1 == 9) {
-                    score = score + calcualteScore(nextFrame);
+                    score = score + calculateScore(nextFrame);
                 } else {
                     if ("X".equals(nextFrame)) {
                         score += 10;
@@ -170,7 +170,7 @@ public class BowlingScore {
         return score;
     }
 
-    private static int calcualteScore(String nextFrame) {
+    private static int calculateScore(String nextFrame) {
         int score = 0;
         char firstShot = firstShot(nextFrame);
         char secondShot = secondShot(nextFrame);
