@@ -146,7 +146,7 @@ public class BowlingScore {
             return calculateScore(nextFrame);
         }
         if (isStrikeFrame(nextFrame)) {
-            return scoreForNextStrikeFrame(frameIndex, frames[frameIndex + 2]);
+            return 10 + scoreForNextNextFrame(frameIndex, frames[frameIndex + 2]);
         }
         if (isSpareShot(secondShot(nextFrame))) {
             return 10;
@@ -158,28 +158,21 @@ public class BowlingScore {
         return frameIndex + 1 == 9;
     }
 
-    private static int scoreForNextStrikeFrame(int frameIndex, String frame) {
-        int score = 10;
-        String nextNextFrame = frame;
-        if (frameIndex + 2 != 9) {
-            if (isStrikeFrame(nextNextFrame)) {
-                score += 10;
-            } else {
-                char first = firstShot(nextNextFrame);
-                char second = secondShot(nextNextFrame);
-                if (isSpareShot(second)) {
-                    score += 10;
-                } else {
-                    if ('-' != first) {
-                        score = score + first - '0';
-                    }
-                }
-            }
-        } else {
-            char first = firstShot(nextNextFrame);
-            score += nonSpareScore(first);
+    private static int scoreForNextNextFrame(int frameIndex, String nextNextFrame) {
+        if (is7thFrame(frameIndex)) {
+            return nonSpareScore(firstShot(nextNextFrame));
         }
-        return score;
+        if (isStrikeFrame(nextNextFrame)) {
+            return 10;
+        }
+        if (isSpareShot(secondShot(nextNextFrame))) {
+            return 10;
+        }
+        return normalShotScore(firstShot(nextNextFrame));
+    }
+
+    private static boolean is7thFrame(int frameIndex) {
+        return frameIndex + 2 == 9;
     }
 
     private static int calculateScore(String nextFrame) {
@@ -190,8 +183,6 @@ public class BowlingScore {
             score += 10;
         } else {
             score += nonSpareScore(firstShot);
-
-
             if (isStrikeShot(secondShot)) {
                 score += 10;
             } else if ('-' != secondShot) {
