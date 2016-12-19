@@ -186,7 +186,7 @@ public class BowlingScore {
             if (isStrikeShot(secondShot)) {
                 score += 10;
             } else if ('-' != secondShot) {
-                score += firstShot - '0';
+                score += secondShot - '0';
             }
         }
         return score;
