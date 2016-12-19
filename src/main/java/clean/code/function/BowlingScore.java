@@ -143,7 +143,7 @@ public class BowlingScore {
     private static int scoreOfNextTwoFrames(int frameIndex, String[] frames) {
         String nextFrame = frames[frameIndex + 1];
         if (is8thFrame(frameIndex)) {
-            return calculateScore(nextFrame);
+            return scoreForNextFrameOf8thFrame(nextFrame);
         }
         if (isStrikeFrame(nextFrame)) {
             return 10 + scoreForNextNextFrame(frameIndex, frames[frameIndex + 2]);
@@ -175,20 +175,11 @@ public class BowlingScore {
         return frameIndex + 2 == 9;
     }
 
-    private static int calculateScore(String nextFrame) {
-        int score = 0;
-        char firstShot = firstShot(nextFrame);
-        char secondShot = secondShot(nextFrame);
-        if (isSpareShot(secondShot)) {
-            score += 10;
-        } else {
-            score += nonSpareScore(firstShot);
-            if (isStrikeShot(secondShot)) {
-                score += 10;
-            } else if ('-' != secondShot) {
-                score += secondShot - '0';
-            }
+    private static int scoreForNextFrameOf8thFrame(String nextFrame) {
+        if (isSpareShot(secondShot(nextFrame))) {
+            return 10;
         }
-        return score;
+        return nonSpareScore(firstShot(nextFrame))
+                + nonSpareScore(secondShot(nextFrame));
     }
 }
