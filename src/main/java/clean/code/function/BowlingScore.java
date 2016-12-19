@@ -92,26 +92,26 @@ public class BowlingScore {
         return '-' == third;
     }
 
-    private static int calculateScoreForFirstNineFrames(String[] framesSplit) {
+    private static int calculateScoreForFirstNineFrames(String[] frames) {
         int score = 0;
-        for (int i = 0; i < 9; i++) {
-            score += scoreForFrameAt(i, framesSplit);
+        for (int frameIndex = 0; frameIndex < 9; frameIndex++) {
+            score += scoreForFrameAt(frameIndex, frames);
         }
         return score;
     }
 
-    private static int scoreForFrameAt(int i, String[] framesSplit) {
+    private static int scoreForFrameAt(int i, String[] frames) {
         int score = 0;
-        String currentFrame = framesSplit[i];
+        String currentFrame = frames[i];
         if ("X".equals(currentFrame)) {
             score += 10;
-            String nextFrame = framesSplit[i + 1];
+            String nextFrame = frames[i + 1];
             if (i + 1 == 9) {
                 score = score + calculateScore(nextFrame);
             } else {
                 if ("X".equals(nextFrame)) {
                     score += 10;
-                    String nextNextFrame = framesSplit[i + 2];
+                    String nextNextFrame = frames[i + 2];
                     if (i + 2 != 9) {
                         if ("X".equals(nextNextFrame)) {
                             score += 10;
@@ -154,7 +154,7 @@ public class BowlingScore {
             char second = secondShot(currentFrame);
             if (isSpareShot(second)) {
                 score += 10;
-                String nextFrame = framesSplit[i + 1];
+                String nextFrame = frames[i + 1];
                 if ("X".equals(nextFrame)) {
                     score += 10;
                 } else {
