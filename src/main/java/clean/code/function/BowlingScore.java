@@ -95,75 +95,81 @@ public class BowlingScore {
     private static int calculateScoreForFirstNineFrames(String[] framesSplit) {
         int score = 0;
         for (int i = 0; i < 9; i++) {
-            String currentFrame = framesSplit[i];
-            if ("X".equals(currentFrame)) {
-                score += 10;
-                String nextFrame = framesSplit[i + 1];
-                if (i + 1 == 9) {
-                    score = score + calculateScore(nextFrame);
-                } else {
-                    if ("X".equals(nextFrame)) {
-                        score += 10;
-                        String nextNextFrame = framesSplit[i + 2];
-                        if (i + 2 != 9) {
-                            if ("X".equals(nextNextFrame)) {
-                                score += 10;
-                            } else {
-                                char first = firstShot(nextNextFrame);
-                                char second = secondShot(nextNextFrame);
-                                if (isSpareShot(second)) {
-                                    score += 10;
-                                } else {
-                                    if ('-' != first) {
-                                        score = score + first - '0';
-                                    }
-                                }
-                            }
-                        } else {
-                            char first = firstShot(nextNextFrame);
-                            score += nonSpareScore(first);
-                        }
+            score += scoreForFrameAt(i, framesSplit);
+        }
+        return score;
+    }
 
-                    } else {
-                        char first = firstShot(nextFrame);
-                        char second = secondShot(nextFrame);
-                        if (isSpareShot(second)) {
+    private static int scoreForFrameAt(int i, String[] framesSplit) {
+        int score = 0;
+        String currentFrame = framesSplit[i];
+        if ("X".equals(currentFrame)) {
+            score += 10;
+            String nextFrame = framesSplit[i + 1];
+            if (i + 1 == 9) {
+                score = score + calculateScore(nextFrame);
+            } else {
+                if ("X".equals(nextFrame)) {
+                    score += 10;
+                    String nextNextFrame = framesSplit[i + 2];
+                    if (i + 2 != 9) {
+                        if ("X".equals(nextNextFrame)) {
                             score += 10;
                         } else {
-                            if ('-' != first) {
-                                score = score + first - '0';
-                            }
-
-                            if ('-' != second) {
-                                score = score + second - '0';
+                            char first = firstShot(nextNextFrame);
+                            char second = secondShot(nextNextFrame);
+                            if (isSpareShot(second)) {
+                                score += 10;
+                            } else {
+                                if ('-' != first) {
+                                    score = score + first - '0';
+                                }
                             }
                         }
+                    } else {
+                        char first = firstShot(nextNextFrame);
+                        score += nonSpareScore(first);
+                    }
 
+                } else {
+                    char first = firstShot(nextFrame);
+                    char second = secondShot(nextFrame);
+                    if (isSpareShot(second)) {
+                        score += 10;
+                    } else {
+                        if ('-' != first) {
+                            score = score + first - '0';
+                        }
+
+                        if ('-' != second) {
+                            score = score + second - '0';
+                        }
                     }
 
                 }
-            } else {
-                char first = firstShot(currentFrame);
-                char second = secondShot(currentFrame);
-                if (isSpareShot(second)) {
-                    score += 10;
-                    String nextFrame = framesSplit[i + 1];
-                    if ("X".equals(nextFrame)) {
-                        score += 10;
-                    } else {
-                        char firstNextFrame = firstShot(nextFrame);
-                        if ('-' != firstNextFrame) {
-                            score += firstNextFrame - '0';
-                        }
-                    }
-                } else {
-                    if ('-' != first) {
-                        score = score + first - '0';
-                    }
 
-                    if ('-' != second) {
-                        score = score + second - '0';
+            }
+        } else {
+            char first = firstShot(currentFrame);
+            char second = secondShot(currentFrame);
+            if (isSpareShot(second)) {
+                score += 10;
+                String nextFrame = framesSplit[i + 1];
+                if ("X".equals(nextFrame)) {
+                    score += 10;
+                } else {
+                    char firstNextFrame = firstShot(nextFrame);
+                    if ('-' != firstNextFrame) {
+                        score += firstNextFrame - '0';
                     }
+                }
+            } else {
+                if ('-' != first) {
+                    score = score + first - '0';
+                }
+
+                if ('-' != second) {
+                    score = score + second - '0';
                 }
             }
         }
