@@ -29,7 +29,7 @@ public class BowlingScore {
                         if('X' == second) {
                             score += 10;
                         } else if('-' != second) {
-                            score += first - '0';
+                            score += second - '0';
                         }
                     }
                 } else {
