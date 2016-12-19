@@ -33,4 +33,8 @@ public class BowlingScoreTest {
         assertEquals(129, BowlingScore.score("62 71 X 9- 8/ X X 35 72 61"));
     }
 
+    @Test
+    public void testScore6() throws Exception {
+        assertEquals(137, BowlingScore.score("62 71 X 9- 8/ X X 35 X 61"));
+    }
 }
