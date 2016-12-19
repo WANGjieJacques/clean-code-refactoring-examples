@@ -103,7 +103,7 @@ public class BowlingScore {
     private static int scoreForFrameAt(int frameIndex, String[] frames) {
         String currentFrame = frames[frameIndex];
         if (isStrikeFrame(currentFrame)) {
-            return 10+scoreOfNextTwoShot(frameIndex, frames);
+            return 10+ scoreOfNextTwoFrames(frameIndex, frames);
         } else {
             return scoreForNotStrikeAt(frameIndex, frames, currentFrame);
         }
@@ -140,7 +140,7 @@ public class BowlingScore {
         return score;
     }
 
-    private static int scoreOfNextTwoShot(int frameIndex, String[] frames) {
+    private static int scoreOfNextTwoFrames(int frameIndex, String[] frames) {
         String nextFrame = frames[frameIndex + 1];
         if (is8thFrame(frameIndex)) {
             return calculateScore(nextFrame);
