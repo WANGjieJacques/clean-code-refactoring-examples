@@ -100,15 +100,13 @@ public class BowlingScore {
         return score;
     }
 
-    private static int scoreForFrameAt(int i, String[] frames) {
-        int score = 0;
-        String currentFrame = frames[i];
+    private static int scoreForFrameAt(int frameIndex, String[] frames) {
+        String currentFrame = frames[frameIndex];
         if ("X".equals(currentFrame)) {
-            score += scoreForStrikeAt(i, frames);
+            return scoreForStrikeAt(frameIndex, frames);
         } else {
-            score += scoreForNotStrikeAt(i, frames, currentFrame);
+            return scoreForNotStrikeAt(frameIndex, frames, currentFrame);
         }
-        return score;
     }
 
     private static int scoreForNotStrikeAt(int i, String[] frames, String currentFrame) {
