@@ -105,7 +105,7 @@ public class BowlingScore {
         if (isStrikeFrame(currentFrame)) {
             return 10+ scoreOfNextTwoFrames(frameIndex, frames);
         } else {
-            return scoreForNotStrikeAt(frameIndex, frames, currentFrame);
+            return scoreForNotStrikeAt(frameIndex, frames);
         }
     }
 
@@ -113,31 +113,14 @@ public class BowlingScore {
         return isStrikeShot(frame.charAt(0));
     }
 
-    private static int scoreForNotStrikeAt(int frameIndex, String[] frames, String currentFrame) {
-        int score = 0;
-        char first = firstShot(currentFrame);
-        char second = secondShot(currentFrame);
-        if (isSpareShot(second)) {
-            score += 10;
-            String nextFrame = frames[frameIndex + 1];
-            if (isStrikeFrame(nextFrame)) {
-                score += 10;
-            } else {
-                char firstNextFrame = firstShot(nextFrame);
-                if ('-' != firstNextFrame) {
-                    score += firstNextFrame - '0';
-                }
-            }
+    private static int scoreForNotStrikeAt(int frameIndex, String[] frames) {
+        String currentFrame = frames[frameIndex];
+        if (isSpareShot(secondShot(currentFrame))) {
+            return 10 + nonSpareScore(firstShot(frames[frameIndex + 1]));
         } else {
-            if ('-' != first) {
-                score = score + first - '0';
-            }
-
-            if ('-' != second) {
-                score = score + second - '0';
-            }
+            return normalShotScore(firstShot(currentFrame)) +
+                    normalShotScore(secondShot(currentFrame));
         }
-        return score;
     }
 
     private static int scoreOfNextTwoFrames(int frameIndex, String[] frames) {
@@ -179,7 +162,7 @@ public class BowlingScore {
         if (isSpareShot(secondShot(nextFrame))) {
             return 10;
         }
-        return nonSpareScore(firstShot(nextFrame))
-                + nonSpareScore(secondShot(nextFrame));
+        return nonSpareScore(firstShot(nextFrame)) +
+                nonSpareScore(secondShot(nextFrame));
     }
 }
